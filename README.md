@@ -1,4 +1,4 @@
-# Unicorn::Prewarm
+# Unicorn::Prewarm [![Build Status](https://travis-ci.org/3scale/unicorn-prewarm.svg?branch=master)](https://travis-ci.org/3scale/unicorn-prewarm) [![Code Climate](https://codeclimate.com/github/3scale/unicorn-prewarm/badges/gpa.svg)]
 
 Prewarm your workers before they receive real traffic.
 
