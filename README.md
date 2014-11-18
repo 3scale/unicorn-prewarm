@@ -29,6 +29,33 @@ after_fork do |server,worker|
 end
 ```
 
+### Rack::Timeout
+
+If you are using `Rack::Timeout` you might want to do something like:
+
+```ruby
+after_fork do |server, worker|
+  # Code to reconnect all databases belongs here
+  server.logger.info("worker=#{worker.nr} spawned pid=#{$$}")
+
+  timeout = Rack::Timeout.service_timeout
+  begin
+    Rack::Timeout.service_timeout = 60
+    server.logger.info("worker=#{worker.nr} prewarming")
+    start = Time.now
+    Unicorn.prewarm(server).is_a?(Net::HTTPSuccess) or raise "Prewarm of worker #{worker.nr} failed"
+    server.logger.info("worker=#{worker.nr} prewarmed in #{Time.now - start}")
+  rescue => error
+    server.logger.error("worker=#{worker.nr} prewarm failed: #{error} in #{Time.now - start}")
+    raise
+  ensure
+    Rack::Timeout.service_timeout = timeout
+  end
+end
+```
+
+To prevent from timeouting on first requests.
+
 ## Contributing
 
 1. Fork it ( https://github.com/3scale/unicorn-prewarm/fork )
