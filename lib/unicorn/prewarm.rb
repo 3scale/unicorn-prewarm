@@ -3,7 +3,7 @@ require 'unicorn/prewarm/version'
 
 module Unicorn
   def self.prewarm(server, options={})
-    get = Net::HTTP::Get.new('/')
+    get = Net::HTTP::Get.new(options.fetch(:uri, '/'))
 
     # Inject custom HTTP Request headers if provided
     if options[:headers]
